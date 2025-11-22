@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
-import Dashboard from '@/components/dashboard/Dashboard'
 import { getCurrentAdmin } from '@/utils/admin'
+import ArticlesClientPage from './ArticlesClientPage'
 
-export default async function Home() {
+export default async function ArticlesPage() {
   const supabase = await createClient()
 
   const {
@@ -16,5 +16,6 @@ export default async function Home() {
 
   const admin = await getCurrentAdmin()
 
-  return <Dashboard displayName={admin?.display_name || null} />
+  return <ArticlesClientPage displayName={admin?.display_name || null} />
 }
+

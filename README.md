@@ -20,6 +20,52 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Supabase Setup
+
+This project is configured to use Supabase for authentication and database.
+
+1. Create a new Supabase project at [database.new](https://database.new)
+2. Get your project URL and API key from the [API Settings](https://app.supabase.com/project/_/settings/api)
+3. Create a `.env.local` file in the root directory with the following:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... or anon key
+```
+
+4. The Supabase client is configured in:
+   - `src/utils/supabase/server.ts` - Server-side client
+   - `src/utils/supabase/client.ts` - Client-side client
+   - `src/middleware.ts` - Authentication middleware
+
+5. **Set up the database tables:**
+   - Go to your Supabase project's SQL Editor
+   - Run the migration file: `supabase/migrations/001_create_admins_table.sql`
+   - This will create the `admins` table and set up automatic user creation triggers
+
+6. **Database Schema:**
+   - `admins` table: Stores user information (username, display_name, email, role, etc.)
+   - Automatically created when a user signs up via the trigger function
+   - Row Level Security (RLS) is enabled for data protection
+
+For more information, see the [Supabase Next.js Quickstart Guide](https://supabase.com/docs/guides/auth/quickstarts/nextjs).
+
+## Database Structure
+
+### Admins Table
+The `admins` table stores user profile information:
+- `id` (UUID): References `auth.users(id)`
+- `username` (VARCHAR): Unique username
+- `display_name` (VARCHAR): Display name
+- `email` (VARCHAR): User email
+- `role` (VARCHAR): User role (default: 'admin')
+- `avatar_url` (TEXT): Profile picture URL
+- `created_at` (TIMESTAMP): Account creation time
+- `updated_at` (TIMESTAMP): Last update time
+
+### Automatic User Creation
+When a user signs up through Authentication, a trigger automatically creates a corresponding record in the `admins` table with the user's metadata.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
