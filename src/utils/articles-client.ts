@@ -56,13 +56,13 @@ export async function createArticle(
     throw new Error("Unauthorized");
   }
 
-  // @ts-ignore - Supabase type inference issue
   const { data, error } = await supabase
     .from("articles")
+    // @ts-expect-error - Supabase type inference issue with insert method
     .insert({
       ...article,
       author_id: user.id,
-    })
+    } as unknown as ArticleInsert)
     .select()
     .single();
 
@@ -102,10 +102,10 @@ export async function updateArticle(
     throw new Error("Unauthorized");
   }
 
-  // @ts-ignore - Supabase type inference issue
   const { data, error } = await supabase
     .from("articles")
-    .update(updates)
+    // @ts-expect-error - Supabase type inference issue with update method
+    .update(updates as unknown as ArticleUpdate)
     .eq("id", id)
     .select()
     .single();
