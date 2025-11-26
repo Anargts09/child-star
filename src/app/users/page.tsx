@@ -1,12 +1,19 @@
-import Dashboard from "@/components/dashboard/Dashboard";
-import { Box } from "@mui/material";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
+import AdminsClientPage from "./AdminsClientPage";
+import { getCurrentAdmin } from "@/utils/admin";
 
-const page = () => {
-  return (
-    <Dashboard>
-      <Box>adsaaa</Box>
-    </Dashboard>
-  );
-};
+export default async function AdminsPage() {
+  const supabase = await createClient();
 
-export default page;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const admin = await getCurrentAdmin();
+  return <AdminsClientPage displayName={admin?.display_name || null} />;
+}

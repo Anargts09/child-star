@@ -1,17 +1,18 @@
-'use client'
+"use client";
 
-import Dashboard from '@/components/dashboard/Dashboard'
-import ArticlesContent from '@/components/articles/ArticlesContent'
+import Dashboard from "@/components/dashboard/Dashboard";
+import ArticlesContent from "@/components/articles/ArticlesContent";
 
 interface ArticlesClientPageProps {
-  displayName?: string | null
+  displayName?: string | null;
 }
 
-export default function ArticlesClientPage({ displayName }: ArticlesClientPageProps) {
+export default function ArticlesClientPage({
+  displayName,
+}: ArticlesClientPageProps) {
   return (
     <Dashboard displayName={displayName}>
       <ArticlesContent />
     </Dashboard>
-  )
+  );
 }
-
