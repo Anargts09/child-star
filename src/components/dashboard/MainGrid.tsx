@@ -121,7 +121,7 @@ export default function MainGrid() {
           <ToggleButton value="all">Бүгд</ToggleButton>
         </ToggleButtonGroup>
         <Typography variant="h6" gutterBottom>
-          {filteredData?.length || 0} мэдээлэл
+          {filteredData?.length || 0} мэдэгдэл
         </Typography>
       </Box>
       <Grid container spacing={3}>

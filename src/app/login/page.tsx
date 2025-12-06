@@ -4,17 +4,16 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { SitemarkIcon } from "@/components/login/CustomIcons";
 import { createClient } from "@/utils/supabase/client";
+import { IconButton, InputAdornment } from "@mui/material";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -66,7 +65,11 @@ export default function SignIn() {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [checkingAuth, setCheckingAuth] = React.useState(true);
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const [passwordVisible, setPasswordVisible] = React.useState(true);
+
+  const handleTogglePassword = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   // Check if user is already logged in
   React.useEffect(() => {
@@ -215,6 +218,15 @@ export default function SignIn() {
               fullWidth
               variant="outlined"
               color={passwordError ? "error" : "primary"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePassword} edge="end">
+                      {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </FormControl>
           <Button
