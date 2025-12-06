@@ -16,6 +16,7 @@ export interface Database {
           display_name: string | null;
           email: string;
           role: string;
+          phonenumber: string;
           avatar_url: string | null;
           created_at: string;
           updated_at: string;
@@ -73,6 +74,19 @@ export interface Database {
           updated_at?: string;
         };
       };
+      reports: {
+        Row: {
+          id: string;
+          mood_level: number | null;
+          action_type: string | null;
+          location: string | null;
+          gender: string | null;
+          age: number | null;
+          phone: string | null;
+          role: string | null;
+          created_at: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
@@ -93,3 +107,5 @@ export type AdminUpdate = Database["public"]["Tables"]["admins"]["Update"];
 export type Article = Database["public"]["Tables"]["articles"]["Row"];
 export type ArticleInsert = Database["public"]["Tables"]["articles"]["Insert"];
 export type ArticleUpdate = Database["public"]["Tables"]["articles"]["Update"];
+
+export type Report = Database["public"]["Tables"]["reports"]["Row"];

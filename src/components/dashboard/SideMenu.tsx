@@ -11,7 +11,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ArticleIcon from "@mui/icons-material/Article";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
@@ -35,9 +34,10 @@ export default function SideMenu({ mobileOpen, onMobileClose }: SideMenuProps) {
   }, [matches]);
 
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
+    { text: "Хяналтын самбар", icon: <DashboardIcon />, path: "/" },
+    { text: "Мэдэгдэл", icon: <PeopleIcon />, path: "/report" },
     { text: "Мэдээ, зөвлөгөө", icon: <ArticleIcon />, path: "/articles" },
-    { text: "Users", icon: <PeopleIcon />, path: "/users" },
+    { text: "Хэрэглэгчид", icon: <PeopleIcon />, path: "/admins" },
   ];
 
   const handleNavigation = (path: string) => {

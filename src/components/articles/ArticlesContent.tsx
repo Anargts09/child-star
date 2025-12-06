@@ -70,7 +70,7 @@ export default function ArticlesContent() {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "Write your article content here...",
+        placeholder: "Мэдээний дэлгэрэнгүй мэдээллийг энд бичнэ үү...",
       }),
     ],
     content: formData.body,
