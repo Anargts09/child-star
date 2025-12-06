@@ -10,6 +10,11 @@ import { useEffect, useState } from "react";
 import { getAllReports } from "@/utils/reports";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts";
+import {
+  CircularProgress,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -25,12 +30,42 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function MainGrid() {
   const [data, setData] = useState<Report[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [filter, setFilter] = useState<"day" | "week" | "month" | "all">("all");
+
+  const filterByDate = (items: Report[]) => {
+    const now = new Date();
+
+    if (filter === "day") {
+      return items.filter((item) => {
+        const d = new Date(item.created_at);
+        return (
+          d.getFullYear() === now.getFullYear() &&
+          d.getMonth() === now.getMonth() &&
+          d.getDate() === now.getDate()
+        );
+      });
+    }
+
+    if (filter === "week") {
+      const weekAgo = new Date();
+      weekAgo.setDate(now.getDate() - 7);
+      return items.filter((item) => new Date(item.created_at) >= weekAgo);
+    }
+
+    if (filter === "month") {
+      const monthAgo = new Date();
+      monthAgo.setMonth(now.getMonth() - 1);
+      return items.filter((item) => new Date(item.created_at) >= monthAgo);
+    }
+
+    return items;
+  };
 
   useEffect(() => {
     const loadReport = async () => {
       try {
-        setLoading(true);
         const res = await getAllReports();
         setData(res);
         setLoading(false);
@@ -41,22 +76,54 @@ export default function MainGrid() {
     };
     loadReport();
   }, []);
+  const filteredData = filterByDate(data);
 
-  const Boy = data.filter((item) => item.gender === "Эрэгтэй").length;
-  const Girl = data.filter((item) => item.gender === "Эмэгтэй").length;
+  const Boy = filteredData.filter((item) => item.gender === "Эрэгтэй").length;
+  const Girl = filteredData.filter((item) => item.gender === "Эмэгтэй").length;
 
   const levelCounts = [1, 2, 3, 4, 5].map(
-    (level) => data.filter((item) => item.mood_level === level).length
+    (level) => filteredData.filter((item) => item.mood_level === level).length
   );
 
   if (loading) {
-    return <div>Уншиж байна. Хүр хүлээнэ үү...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: 400,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
   return (
     <Box sx={{ width: "100%", maxWidth: 1200 }}>
-      <Typography variant="h6" gutterBottom>
-        Нийт мэдээлэл {data?.length || 0}
-      </Typography>
+      <Box
+        sx={{
+          mb: 4,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <ToggleButtonGroup
+          value={filter}
+          exclusive
+          onChange={(e, v) => v && setFilter(v)}
+          sx={{ mb: 2 }}
+        >
+          <ToggleButton value="day">1 өдөр</ToggleButton>
+          <ToggleButton value="week">7 хоног</ToggleButton>
+          <ToggleButton value="month">1 сар</ToggleButton>
+          <ToggleButton value="all">Бүгд</ToggleButton>
+        </ToggleButtonGroup>
+        <Typography variant="h6" gutterBottom>
+          {filteredData?.length || 0} мэдээлэл
+        </Typography>
+      </Box>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Item>
@@ -73,16 +140,18 @@ export default function MainGrid() {
                     {
                       id: 0,
                       value: Boy,
-                      label: `Эрэгтэй ${((Boy / data.length) * 100).toFixed(
-                        1
-                      )}%`,
+                      label: `Эрэгтэй ${(
+                        (Boy / filteredData.length) *
+                        100
+                      ).toFixed(1)}%`,
                     },
                     {
                       id: 1,
                       value: Girl,
-                      label: `Эмэгтэй ${((Girl / data.length) * 100).toFixed(
-                        1
-                      )}%`,
+                      label: `Эмэгтэй ${(
+                        (Girl / filteredData.length) *
+                        100
+                      ).toFixed(1)}%`,
                     },
                   ],
                 },
@@ -107,51 +176,52 @@ export default function MainGrid() {
                     data: [
                       {
                         id: 0,
-                        value: data.filter(
+                        value: filteredData.filter(
                           (item) => item.action_type === "Цахим"
                         ).length,
                         label: `Цахим ${(
                           (data.filter((item) => item.action_type === "Цахим")
                             .length /
-                            data.length) *
+                            filteredData.length) *
                           100
                         ).toFixed(1)}%`,
                       },
                       {
                         id: 1,
-                        value: data.filter(
+                        value: filteredData.filter(
                           (item) => item.action_type === "Үгээр"
                         ).length,
                         label: `Үгээр ${(
-                          (data.filter((item) => item.action_type === "Үгээр")
-                            .length /
-                            data.length) *
+                          (filteredData.filter(
+                            (item) => item.action_type === "Үгээр"
+                          ).length /
+                            filteredData.length) *
                           100
                         ).toFixed(1)}%`,
                       },
                       {
                         id: 2,
-                        value: data.filter(
+                        value: filteredData.filter(
                           (item) => item.action_type === "Сэтгэл зүйн"
                         ).length,
                         label: `Сэтгэл зүйн ${(
-                          (data.filter(
+                          (filteredData.filter(
                             (item) => item.action_type === "Сэтгэл зүйн"
                           ).length /
-                            data.length) *
+                            filteredData.length) *
                           100
                         ).toFixed(1)}%`,
                       },
                       {
                         id: 3,
-                        value: data.filter(
+                        value: filteredData.filter(
                           (item) => item.action_type === "Бие махбод"
                         ).length,
                         label: `Бие махбод ${(
-                          (data.filter(
+                          (filteredData.filter(
                             (item) => item.action_type === "Бие махбод"
                           ).length /
-                            data.length) *
+                            filteredData.length) *
                           100
                         ).toFixed(1)}%`,
                       },
@@ -177,34 +247,40 @@ export default function MainGrid() {
                   data: [
                     {
                       id: 0,
-                      value: data.filter((item) => item.location === "school")
-                        .length,
+                      value: filteredData.filter(
+                        (item) => item.location === "school"
+                      ).length,
                       label: `Сургууль ${(
-                        (data.filter((item) => item.location === "school")
-                          .length /
-                          data.length) *
+                        (filteredData.filter(
+                          (item) => item.location === "school"
+                        ).length /
+                          filteredData.length) *
                         100
                       ).toFixed(1)}%`,
                     },
                     {
                       id: 1,
-                      value: data.filter((item) => item.location === "public")
-                        .length,
+                      value: filteredData.filter(
+                        (item) => item.location === "public"
+                      ).length,
                       label: `Олон нийтийн газар ${(
-                        (data.filter((item) => item.location === "public")
-                          .length /
-                          data.length) *
+                        (filteredData.filter(
+                          (item) => item.location === "public"
+                        ).length /
+                          filteredData.length) *
                         100
                       ).toFixed(1)}%`,
                     },
                     {
                       id: 2,
-                      value: data.filter((item) => item.location === "Гэр бүл")
-                        .length,
+                      value: filteredData.filter(
+                        (item) => item.location === "Гэр бүл"
+                      ).length,
                       label: `Гэрт ${(
-                        (data.filter((item) => item.location === "Гэр бүл")
-                          .length /
-                          data.length) *
+                        (filteredData.filter(
+                          (item) => item.location === "Гэр бүл"
+                        ).length /
+                          filteredData.length) *
                         100
                       ).toFixed(1)}%`,
                     },

@@ -14,18 +14,16 @@ import { getAllAdmins } from "@/utils/admin";
 
 export default function AdminsContent() {
   const [data, setData] = useState<Admin[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        setLoading(loading);
         const res = await getAllAdmins();
         setData(res);
         setLoading(false);
       } catch (error) {
         console.error("error", error);
-
         setLoading(false);
       } finally {
         setLoading(false);
