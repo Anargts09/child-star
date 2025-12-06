@@ -12,6 +12,7 @@ import {
 import { Report } from "@/types/database";
 import { useEffect, useState } from "react";
 import { getAllReports } from "@/utils/reports";
+import { formatedDate } from "@/lib/formatedDate";
 
 const ReportsContent = () => {
   const [data, setData] = useState<Report[]>([]);
@@ -55,6 +56,7 @@ const ReportsContent = () => {
           <TableHead>
             <TableRow>
               <TableCell>№</TableCell>
+              <TableCell align="left">Огноо</TableCell>
               <TableCell align="left">Хүйс</TableCell>
               <TableCell align="left">Нас</TableCell>
               <TableCell align="left">Мэдрэмжийн түвшин</TableCell>
@@ -72,6 +74,9 @@ const ReportsContent = () => {
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell align="left">{index + 1}</TableCell>
+                  <TableCell align="left">
+                    {formatedDate(row?.created_at)}
+                  </TableCell>
                   <TableCell align="left">{row?.gender}</TableCell>
                   <TableCell align="left">{row?.age}</TableCell>
                   <TableCell align="left">{row?.mood_level}</TableCell>

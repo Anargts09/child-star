@@ -1,30 +1,29 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import { alpha } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import AppNavbar from './AppNavbar'
-import Header from './Header'
-import MainGrid from './MainGrid'
-import SideMenu from './SideMenu'
-import Toolbar from '@mui/material/Toolbar'
+import * as React from "react";
+import { alpha } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import AppNavbar from "./AppNavbar";
+import MainGrid from "./MainGrid";
+import SideMenu from "./SideMenu";
+import Toolbar from "@mui/material/Toolbar";
 
 interface DashboardLayoutProps {
-  displayName?: string | null
-  children?: React.ReactNode
+  displayName?: string | null;
+  children?: React.ReactNode;
 }
 
-export default function DashboardLayout({ displayName, children }: DashboardLayoutProps) {
-  const [mobileOpen, setMobileOpen] = React.useState(false)
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
+    setMobileOpen(!mobileOpen);
+  };
 
   return (
     <div suppressHydrationWarning>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <SideMenu mobileOpen={mobileOpen} onMobileClose={handleDrawerToggle} />
         <AppNavbar onMenuClick={handleDrawerToggle} />
         {/* Main content */}
@@ -35,22 +34,21 @@ export default function DashboardLayout({ displayName, children }: DashboardLayo
             backgroundColor: theme.vars
               ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
               : alpha(theme.palette.background.default, 1),
-            overflow: 'auto',
+            overflow: "auto",
           })}
         >
           <Toolbar />
           <Stack
             spacing={2}
             sx={{
-              alignItems: 'center',
+              alignItems: "center",
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },
             }}
           >
             {children || (
-              <Box sx={{ width: '100%', maxWidth: 1200, p: 3 }}>
-                <Header displayName={displayName} />
+              <Box sx={{ width: "100%", maxWidth: 1200, p: 3 }}>
                 <MainGrid />
               </Box>
             )}
@@ -58,6 +56,5 @@ export default function DashboardLayout({ displayName, children }: DashboardLayo
         </Box>
       </Box>
     </div>
-  )
+  );
 }
-
